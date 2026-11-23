@@ -1,0 +1,241 @@
+{
+  "name": "Customer Support Ticket Management – Form Version",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f706abc8-ca08-4347-adbd-9e5a676141b7",
+              "name": "customer_name",
+              "value": "={{ $json.customer_name }}",
+              "type": "string"
+            },
+            {
+              "id": "d39f3142-128a-4480-8104-13d411bc5e79",
+              "name": "customer_email",
+              "value": "={{ $json.customer_email }}",
+              "type": "string"
+            },
+            {
+              "id": "937916d8-69b3-417d-b057-0ee7d8dd053e",
+              "name": "message",
+              "value": "={{ $json.message }}",
+              "type": "string"
+            },
+            {
+              "id": "portfolio-ticket-id",
+              "name": "ticket_id",
+              "value": "TKT001",
+              "type": "string"
+            },
+            {
+              "id": "portfolio-ticket-status",
+              "name": "ticket_status",
+              "value": "Open",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -368,
+        -112
+      ],
+      "id": "df57de70-b28d-4cbb-bf53-903b2731a2fc",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Customer Support Ticket Tracker"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-P4bTPE38ipQXSPRdi-voMlAYaRYwWZEMUyL6e-kvK0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ticket ID": "={{ $json.ticket_id }}",
+            "Customer Name": "={{ $json.customer_name }}",
+            "Message": "={{ $json.message }}",
+            "Ticket Status": "={{ $json.ticket_status }}",
+            "Customer Email": "={{ $json.customer_email }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Ticket ID",
+              "displayName": "Ticket ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer Email",
+              "displayName": "Customer Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Ticket Status",
+              "displayName": "Ticket Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -176,
+        -64
+      ],
+      "id": "30357b0f-c6e7-47ee-bd96-535042d9796c",
+      "name": "Append row in sheet"
+    },
+    {
+      "parameters": {
+        "sendTo": "YOUR_NOTIFICATION_EMAIL@example.com",
+        "subject": "New Customer Support Ticket Received - TKT001",
+        "emailType": "text",
+        "message": "={{\n'A new customer support ticket has been received.\\n\\n' +\n'Ticket ID: ' + $('Edit Fields').item.json.ticket_id + '\\n' +\n'Customer Name: ' + $('Edit Fields').item.json.customer_name + '\\n' +\n'Customer Email: ' + $('Edit Fields').item.json.customer_email + '\\n\\n' +\n'Customer Message: ' + $('Edit Fields').item.json.message + '\\n\\n' +\n'Ticket Status: ' + $('Edit Fields').item.json.ticket_status\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        -112
+      ],
+      "id": "75dd2142-dea0-406a-92ac-5954c110ee57",
+      "name": "Send a message"
+    },
+    {
+      "parameters": {
+        "formTitle": "Customer Support Request Form",
+        "formDescription": "Please complete this form to submit your customer support request. Our team will review your request and get back to you",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Customer name",
+              "fieldName": "customer_name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Customer email",
+              "fieldType": "email",
+              "fieldName": "customer_email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "How can we help you?",
+              "fieldType": "textarea",
+              "fieldName": "message",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -592,
+        -192
+      ],
+      "id": "b4a32069-f131-4dd0-8ba5-56848e067b38",
+      "name": "On form submission"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "meta": {},
+  "nodeGroups": [],
+  "tags": []
+}
